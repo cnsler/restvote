@@ -1,0 +1,11 @@
+HELP.md
+log
+out
+target
+*.patch
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
