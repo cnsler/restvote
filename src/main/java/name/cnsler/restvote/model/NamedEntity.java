@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import name.cnsler.restvote.util.validation.NoHtml;
 
-
 @MappedSuperclass
 @Getter
 @Setter
@@ -18,7 +17,7 @@ import name.cnsler.restvote.util.validation.NoHtml;
 public abstract class NamedEntity extends BaseEntity {
 
     @NotBlank
-    @Size(min = 2, max = 128)
+    @Size(max = 128)
     @Column(name = "name", nullable = false)
     @NoHtml
     protected String name;
@@ -30,6 +29,6 @@ public abstract class NamedEntity extends BaseEntity {
 
     @Override
     public String toString() {
-        return super.toString() + '[' + name + ']';
+        return getClass().getSimpleName() + "{id=" + id + ", name='" + name + "'}";
     }
 }

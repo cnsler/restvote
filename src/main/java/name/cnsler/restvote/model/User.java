@@ -70,6 +70,11 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
 
     @Override
     public String toString() {
-        return "User:" + id +  '[' + email + ']';
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", roles=" + roles +
+                '}';
     }
 }
