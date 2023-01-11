@@ -1,5 +1,6 @@
 package name.cnsler.restvote.web.vote;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import name.cnsler.restvote.model.Vote;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -27,7 +29,8 @@ public class VoteController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Vote> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @RequestBody Integer restaurantId) {
-        //TODO check exist vote
+        //TODO check restaurant id exists
+        //TODO check user vote exists
         //TODO update vote in POST method?
         Vote vote = new Vote();
         vote.setUser(authUser.getUser());
@@ -52,11 +55,11 @@ public class VoteController {
 
     //TODO get all votes for current user?
 
-    //TODO get all votes on date?
     @GetMapping
-    public List<Vote> getAll() {
-        List<Vote> votes = voteRepository.findAllByVoteDate(LocalDate.now());
-        log.info("getAll votes={}", votes);
+    public List<Vote> getAll(@Nullable LocalDate date) {
+        LocalDate voteDate = Objects.requireNonNullElse(date, LocalDate.now());
+        List<Vote> votes = voteRepository.findAllByVoteDate(voteDate);
+        log.info("getAll votes={} on date={}", votes, voteDate);
         //TODO restaurant id instead Restaurant{id, title}?
         return votes;
     }
