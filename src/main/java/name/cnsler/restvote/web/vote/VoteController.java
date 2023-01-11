@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,5 +52,12 @@ public class VoteController {
 
     //TODO get all votes for current user?
 
-    //TODO get all votes
+    //TODO get all votes on date?
+    @GetMapping
+    public List<Vote> getAll() {
+        List<Vote> votes = voteRepository.findAllByVoteDate(LocalDate.now());
+        log.info("getAll votes={}", votes);
+        //TODO restaurant id instead Restaurant{id, title}?
+        return votes;
+    }
 }
