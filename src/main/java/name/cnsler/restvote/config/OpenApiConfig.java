@@ -22,10 +22,11 @@ import org.springframework.context.annotation.Configuration;
                 title = "REST API documentation",
                 version = "1.0",
                 description = """
-                        Spring Boot application -- voting for restaurant via REST API
+                        RestVoteApp: Spring Boot application for restaurant voting via REST API
                         <p><b>Credentials:</b><br>
                         - a@a / adminPass<br>
-                        - u@u / userPass</p>
+                        - u@u / userPass<br>
+                        - n@u / newPass</p>
                         """
         ),
         security = @SecurityRequirement(name = "basicAuth")
