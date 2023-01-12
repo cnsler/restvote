@@ -13,4 +13,12 @@ public class Restaurant extends BaseEntity {
     @NotBlank
     @NoHtml
     private String title;
+
+    @Override
+    public String toString() {
+        return "Restaurant{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }
