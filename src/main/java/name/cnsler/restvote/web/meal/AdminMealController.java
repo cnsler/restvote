@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import name.cnsler.restvote.error.IllegalRequestDataException;
 import name.cnsler.restvote.model.Meal;
+import name.cnsler.restvote.model.Restaurant;
 import name.cnsler.restvote.repository.MealRepository;
 import name.cnsler.restvote.repository.RestaurantRepository;
 import name.cnsler.restvote.util.validation.ValidationUtil;
@@ -19,6 +20,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = AdminMealController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,21 +54,26 @@ public class AdminMealController {
 
     @GetMapping("/{id}")
     public Meal get(@PathVariable int restaurantId, @PathVariable int id) {
-        //TODO check restaurant id exists
-        //TODO check meal belong to restaurant
-        //TODO it's check meal (Entity) id exists?
-        Meal meal = mealRepository.getExisted(id);
-        log.info("get {}", meal);
-        return meal;
+        //TODO check restaurant id exists?
+        Optional<Meal> optionalMeal = mealRepository.getByIdAndRestaurantId(id, restaurantId);
+        return optionalMeal.orElseThrow(
+                () -> new IllegalRequestDataException(
+                        "Meal with id=" + id + " for restaurant id=" + restaurantId + " not found"));
     }
 
     @PutMapping(value = "/{id}" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     public void update(@PathVariable int restaurantId, @PathVariable int id, @Valid @RequestBody Meal meal) {
-        //TODO check restaurant id exists
-        //TODO check meal belong to restaurant
-        log.info("update {} with id={}", meal, id);
-        ValidationUtil.assureIdConsistent(meal, id);
-        log.info("update {} with id={}", meal, id);
+        //TODO check restaurant id exists?
+//        ValidationUtil.assureIdConsistent(meal, id);
+        Optional<Meal> optionalMeal = mealRepository.getByIdAndRestaurantId(id, restaurantId);
+        Meal updatableMeal = optionalMeal.orElseThrow(
+                () -> new IllegalRequestDataException(
+                        "Meal with id=" + id + " for restaurant id=" + restaurantId + " not found"));
+        log.info("updatableMeal={}", updatableMeal);
+        meal.setId(id);
+        Restaurant restaurant = updatableMeal.getRestaurant();
+        meal.setRestaurant(restaurant);
+        log.info("update {}", meal);
         mealRepository.save(meal);
     }
 
