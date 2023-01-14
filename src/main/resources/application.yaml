@@ -15,7 +15,7 @@ spring:
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
         jdbc.batch_size: 20
   datasource:
-    url: jdbc:h2:mem:restvote
+    url: jdbc:h2:mem:restvote;DB_CLOSE_DELAY=-1 # https://h2database.com/html/features.html#in_memory_databases
     #    tcp: jdbc:h2:tcp://localhost:9092/mem:restvote
     username: sa
     password: saPass
