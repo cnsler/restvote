@@ -3,9 +3,9 @@ package name.cnsler.restvote.web.restaurant;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import name.cnsler.restvote.error.IllegalRequestDataException;
 import name.cnsler.restvote.model.Restaurant;
 import name.cnsler.restvote.repository.RestaurantRepository;
-import name.cnsler.restvote.util.validation.ValidationUtil;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +23,9 @@ public class AdminRestaurantController {
     private final RestaurantRepository restaurantRepository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
-        log.info("crate {}", restaurant);
-        ValidationUtil.checkNew(restaurant);
-        Restaurant created = restaurantRepository.save(restaurant);
+    public ResponseEntity<Restaurant> createWithLocation(@RequestBody @Valid Restaurant newRestaurant) {
+        Restaurant created = restaurantRepository.save(newRestaurant);
+        log.info("crate {}", newRestaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId())
@@ -36,26 +35,32 @@ public class AdminRestaurantController {
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
-        log.info("get {}", id);
-        return restaurantRepository.getExisted(id);
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
+                () -> new IllegalRequestDataException("Restaurant with id=" + id + " not found"));
+        log.info("get {}", restaurant);
+        return restaurant;
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
-        log.info("update {} with id={}", restaurant, id);
-        ValidationUtil.assureIdConsistent(restaurant, id);
-        restaurantRepository.save(restaurant);
+    public void update(@PathVariable int id, @RequestBody @Valid Restaurant updatedRestaurant) {
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
+                () -> new IllegalRequestDataException("Restaurant with id=" + id + " not found"));
+        log.info("update {}", restaurant);
+        log.info("updated {}", updatedRestaurant);
+        updatedRestaurant.setId(id);
+        restaurantRepository.save(updatedRestaurant);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
-        log.info("delete {}", id);
-        restaurantRepository.deleteExisted(id);
+        restaurantRepository.deleteById(id);
+        log.info("delete restaurant with id={}", id);
     }
 
     @GetMapping
     public List<Restaurant> getAll() {
-        log.info("getAll");
-        return restaurantRepository.findAll();
+        List<Restaurant> restaurants = restaurantRepository.findAll();
+        log.info("get all {}", restaurants);
+        return restaurants;
     }
 }

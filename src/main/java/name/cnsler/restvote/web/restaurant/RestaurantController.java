@@ -2,6 +2,7 @@ package name.cnsler.restvote.web.restaurant;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import name.cnsler.restvote.error.IllegalRequestDataException;
 import name.cnsler.restvote.model.Restaurant;
 import name.cnsler.restvote.repository.RestaurantRepository;
 import org.springframework.http.MediaType;
@@ -22,8 +23,10 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
-        log.info("get {}", id);
-        return restaurantRepository.getExisted(id);
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
+                () -> new IllegalRequestDataException("Restaurant with id=" + id + " not found"));
+        log.info("get {}", restaurant);
+        return restaurant;
     }
 
     //TODO get restaurant with meals on date or current date:
@@ -32,8 +35,9 @@ public class RestaurantController {
 
     @GetMapping
     public List<Restaurant> getAll() {
-        log.info("getAll");
-        return restaurantRepository.findAll();
+        List<Restaurant> restaurants = restaurantRepository.findAll();
+        log.info("get all {}", restaurants);
+        return restaurants;
     }
 
     //TODO get all with meals?
