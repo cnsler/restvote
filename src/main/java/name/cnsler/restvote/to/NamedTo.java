@@ -9,9 +9,9 @@ import name.cnsler.restvote.util.validation.NoHtml;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class NamedTo extends BaseTo {
-    @NotBlank
-    @Size(min = 2, max = 128)
-    @NoHtml
+    @NoHtml(message = "Name must not contain html content")
+    @NotBlank(message = "Name must not be empty")
+    @Size(max = 128)
     protected String name;
 
     public NamedTo(Integer id, String name) {
@@ -21,6 +21,6 @@ public class NamedTo extends BaseTo {
 
     @Override
     public String toString() {
-        return super.toString() + '[' + name + ']';
+        return getClass().getSimpleName() + "{id=" + id + ", name='" + name + "'}";
     }
 }

@@ -16,6 +16,6 @@ public abstract class BaseTo implements HasId {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + ":" + id;
+        return getClass().getSimpleName() + "{id=" + id + '}';
     }
 }
