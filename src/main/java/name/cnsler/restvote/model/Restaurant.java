@@ -10,8 +10,8 @@ import name.cnsler.restvote.util.validation.NoHtml;
 @Getter
 public class Restaurant extends BaseEntity {
     @Column(name = "title", nullable = false, unique = true)
-    @NotBlank
-    @NoHtml
+    @NoHtml(message = "Restaurant title must not contain html content")
+    @NotBlank(message = "Restaurant title must not be empty")
     private String title;
 
     @Override

@@ -14,17 +14,17 @@ import java.time.LocalDate;
 public class Vote extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @NotNull
+    @NotNull(message = "User must not be null")
     @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
-    @NotNull
+    @NotNull(message = "Restaurant must not be null")
     private Restaurant restaurant;
 
     @Column(name = "vote_date", nullable = false)
-    @NotNull
+    @NotNull(message = "Date must not be null")
     private LocalDate voteDate;
 
     @Override

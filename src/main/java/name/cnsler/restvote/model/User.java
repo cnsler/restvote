@@ -26,14 +26,15 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "email", nullable = false, unique = true)
-    @Email
-    @NotBlank
+    @Email(message = "E-mail must have correct format")
+    // https://stackoverflow.com/questions/17480809
+    @NoHtml(message = "E-mail must not contain html content")
+    @NotBlank(message = "E-mail must not be empty")
     @Size(max = 128)
-    @NoHtml   // https://stackoverflow.com/questions/17480809
     private String email;
 
     @Column(name = "password", nullable = false)
-    @NotBlank
+    @NotBlank(message = "Password must not be empty")
     @Size(max = 256)
     // https://stackoverflow.com/a/12505165/548473
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

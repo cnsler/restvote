@@ -16,18 +16,18 @@ import java.time.LocalDate;
 @Setter
 public class Meal extends NamedEntity {
     @Column(name = "price", nullable = false)
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "Price must not be null")
+    @PositiveOrZero(message = "Price must be greater than or equal to 0")
     private Integer price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
-    @NotNull
+    @NotNull(message = "Restaurant must not be null")
     @JsonIgnore
     private Restaurant restaurant;
 
     @Column(name = "meal_date", nullable = false)
-    @NotNull
+    @NotNull(message = "Date must not be null")
     private LocalDate mealDate;
 
     @Override

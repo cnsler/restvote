@@ -16,10 +16,10 @@ import name.cnsler.restvote.util.validation.NoHtml;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class NamedEntity extends BaseEntity {
 
-    @NotBlank
-    @Size(max = 128)
     @Column(name = "name", nullable = false)
-    @NoHtml
+    @NoHtml(message = "Name must not contain html content")
+    @NotBlank(message = "Name must not be empty")
+    @Size(max = 128)
     protected String name;
 
     protected NamedEntity(Integer id, String name) {
