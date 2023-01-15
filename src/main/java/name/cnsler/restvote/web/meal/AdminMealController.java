@@ -28,7 +28,8 @@ public class AdminMealController {
     private final RestaurantRepository restaurantRepository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Meal> createWithLocation(@PathVariable int restaurantId, @Valid @RequestBody Meal meal) {
+    public ResponseEntity<Meal> createWithLocation(@PathVariable int restaurantId,
+                                                   @Valid @RequestBody Meal meal) {
         meal.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
         Meal created = mealRepository.save(meal);
         log.info("{} created", created);
@@ -48,7 +49,9 @@ public class AdminMealController {
 
     @PutMapping(value = "/{id}" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable int restaurantId, @PathVariable int id, @Valid @RequestBody Meal meal) {
+    public void update(@PathVariable int restaurantId,
+                       @PathVariable int id,
+                       @Valid @RequestBody Meal meal) {
         Meal updatableMeal = getMealBelongRestaurant(id, restaurantId);
         log.info("updatableMeal={}", updatableMeal);
         meal.setId(id);
@@ -77,6 +80,7 @@ public class AdminMealController {
 
     private Meal getMealBelongRestaurant(int id, int restaurantId) {
         return mealRepository.getByIdAndRestaurantId(id, restaurantId).orElseThrow(
-                () -> new IllegalRequestDataException("Meal with id=" + id + " for restaurant id=" + restaurantId + " not found"));
+                () -> new IllegalRequestDataException(
+                        "Meal with id=" + id + " for restaurant id=" + restaurantId + " not found"));
     }
 }

@@ -35,7 +35,8 @@ public class ProfileVoteController {
     private final LocalTime voteEndTime = LocalTime.parse("12:00");
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Vote> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody VoteTo voteTo) {
+    public ResponseEntity<Vote> createWithLocation(@AuthenticationPrincipal AuthUser authUser,
+                                                   @Valid @RequestBody VoteTo voteTo) {
         int restaurantId = voteTo.getRestaurantId();
         Vote vote = new Vote();
         vote.setUser(authUser.getUser());
@@ -62,7 +63,9 @@ public class ProfileVoteController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id, @Valid @RequestBody VoteTo voteTo) {
+    public void update(@AuthenticationPrincipal AuthUser authUser,
+                       @PathVariable int id,
+                       @Valid @RequestBody VoteTo voteTo) {
         int restaurantId = voteTo.getRestaurantId();
         Vote vote = voteRepository.getByIdAndUserId(id, authUser.id()).orElse(null);
         checkExists(vote, id, Vote.class);
