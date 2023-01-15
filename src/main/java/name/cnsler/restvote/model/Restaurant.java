@@ -1,24 +1,19 @@
 package name.cnsler.restvote.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
-import name.cnsler.restvote.util.validation.NoHtml;
 
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 @Getter
-public class Restaurant extends BaseEntity {
-    @Column(name = "title", nullable = false, unique = true)
-    @NoHtml(message = "Restaurant title must not contain html content")
-    @NotBlank(message = "Restaurant title must not be empty")
-    private String title;
-
+public class Restaurant extends NamedEntity {
     @Override
     public String toString() {
         return "Restaurant{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

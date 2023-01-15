@@ -9,7 +9,7 @@ VALUES ('ADMIN', 1),
        ('USER', 2),
        ('USER', 3);
 
-INSERT INTO RESTAURANT (TITLE)
+INSERT INTO RESTAURANT (NAME)
 VALUES ('Огонек'),
        ('Рыбак'),
        ('Кавказ');
