@@ -55,14 +55,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String message = ValidationUtil.getRootCause(ex).getMessage();
         log.error("DataIntegrityViolationException: {}", message);
         String customMessage = null;
-        if (message.toLowerCase().contains("restaurant(title")) {
-            customMessage = "Restaurant with this title already existed";
+        if (message.toLowerCase().contains("restaurant(name")) {
+            customMessage = "Restaurant with this name already existed";
         }
         if (message.toLowerCase().contains("foreign key(restaurant_id)")) {
             customMessage = "Invalid restaurant id";
         }
         if (message.toLowerCase().contains("vote_unique_user_date")) {
-            customMessage = "One vote per day";
+            customMessage = "Only one vote per day";
         }
         if (message.toLowerCase().contains("meal_unique_restaurant_date_name")) {
             customMessage = "One unique meal name on day for restaurant";

@@ -8,8 +8,8 @@ import lombok.Value;
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class VoteTo extends BaseTo {
-    @NotNull(message = "Price must not be null")
-    @Positive(message = "Price must be greater than 0")
+    @NotNull(message = "Restaurant id must not be null")
+    @Positive(message = "Restaurant id must be greater than 0")
     Integer restaurantId;
 
     public VoteTo(Integer id, Integer restaurantId) {
