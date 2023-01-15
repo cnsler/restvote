@@ -66,8 +66,7 @@ public class ProfileVoteController {
         int restaurantId = voteTo.getRestaurantId();
         Vote vote = voteRepository.getByIdAndUserId(id, authUser.id()).orElse(null);
         checkExists(vote, id, Vote.class);
-        if (restaurantId == vote.getRestaurant().id()) return;
-        vote.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
+        vote.setRestaurant(restaurantRepository.getExists(restaurantId, Restaurant.class));
         checkVoteEndTime(vote);
         Vote updated = voteRepository.save(vote);
         log.info("updated {}", updated);
