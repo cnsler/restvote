@@ -13,7 +13,7 @@ public interface MealRepository extends BaseRepository<Meal> {
 
     List<Meal> findAllByRestaurantId(int restaurantId, Sort sort);
 
-    List<Meal> findAllByRestaurantIdAndMealDate(int restaurantId, LocalDate mealDate);
+    List<Meal> findAllByRestaurantIdAndDate(int restaurantId, LocalDate date);
 
     Optional<Meal> getByIdAndRestaurantId(int id, int restaurantId);
 }

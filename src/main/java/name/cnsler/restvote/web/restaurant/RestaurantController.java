@@ -40,7 +40,7 @@ public class RestaurantController {
     public List<Meal> getMealsOnDate(@PathVariable int id, @Nullable LocalDate date) {
         LocalDate mealDate = Objects.requireNonNullElse(date, LocalDate.now());
         Restaurant restaurant = restaurantRepository.getExists(id, Restaurant.class);
-        List<Meal> meals = mealRepository.findAllByRestaurantIdAndMealDate(restaurant.id(), mealDate);
+        List<Meal> meals = mealRepository.findAllByRestaurantIdAndDate(restaurant.id(), mealDate);
         log.info("get all meals {} for restaurant id={} on date={}", meals, id, mealDate);
         return meals;
     }

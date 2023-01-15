@@ -25,13 +25,12 @@ public class Meal extends NamedEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @NotNull(message = "Restaurant must not be null")
     @JsonIgnore
     private Restaurant restaurant;
 
     @Column(name = "meal_date", nullable = false)
     @NotNull(message = "Date must not be null")
-    private LocalDate mealDate;
+    private LocalDate date;
 
     @Override
     public String toString() {
@@ -40,7 +39,7 @@ public class Meal extends NamedEntity {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", restaurantId=" + restaurant.getId() +
-                ", mealDate=" + mealDate +
+                ", mealDate=" + date +
                 '}';
     }
 }
