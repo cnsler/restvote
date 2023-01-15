@@ -1,3 +1,6 @@
+## RestVoteApp: Spring Boot application for restaurant voting via REST API
+[Application demo http://restvote.ru:49500](http://restvote.ru:49500)
+
 ##  Technical requirement: 
 Design and implement a REST API using Hibernate/Spring/SpringMVC (Spring-Boot preferred!) **without frontend**.
 

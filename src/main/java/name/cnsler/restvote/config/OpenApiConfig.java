@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
                         - u@u / userPass<br>
                         - n@u / newPass</p>
                         """,
-                contact = @Contact(url = "https://cnsler.name", name = "Konstantin Parshin", email = "to@cnsler.name")
+                contact = @Contact(url = "https://cnsler.ru", name = "Konstantin Parshin", email = "cnsler@mail.ru")
         ),
         tags = {
                 @Tag(name = "admin-meal-controller"),

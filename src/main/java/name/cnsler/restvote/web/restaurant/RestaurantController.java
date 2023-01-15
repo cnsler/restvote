@@ -7,6 +7,7 @@ import name.cnsler.restvote.model.Meal;
 import name.cnsler.restvote.model.Restaurant;
 import name.cnsler.restvote.repository.MealRepository;
 import name.cnsler.restvote.repository.RestaurantRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,7 @@ public class RestaurantController {
     }
 
     @GetMapping
+    @Cacheable(value = "restaurant")
     public List<Restaurant> getAll() {
         List<Restaurant> restaurants = restaurantRepository.findAll();
         log.info("get all {}", restaurants);

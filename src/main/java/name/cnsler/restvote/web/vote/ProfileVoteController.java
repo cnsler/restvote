@@ -1,7 +1,6 @@
 package name.cnsler.restvote.web.vote;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import name.cnsler.restvote.error.IllegalRequestDataException;
 import name.cnsler.restvote.model.Restaurant;
@@ -10,6 +9,7 @@ import name.cnsler.restvote.repository.RestaurantRepository;
 import name.cnsler.restvote.repository.VoteRepository;
 import name.cnsler.restvote.to.VoteTo;
 import name.cnsler.restvote.web.AuthUser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +26,20 @@ import static name.cnsler.restvote.util.validation.ValidationUtil.checkExists;
 
 @RestController
 @RequestMapping(value = ProfileVoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-@AllArgsConstructor
 @Slf4j
 public class ProfileVoteController {
     static final String REST_URL = "/api/profile/votes";
     private final VoteRepository voteRepository;
     private final RestaurantRepository restaurantRepository;
-    private final LocalTime voteEndTime = LocalTime.parse("12:00");
+    private final LocalTime voteEndTime;
+
+    public ProfileVoteController(VoteRepository voteRepository,
+                                 RestaurantRepository restaurantRepository,
+                                 @Value("${app.time.constraint}") LocalTime voteEndTime) {
+        this.voteRepository = voteRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.voteEndTime = voteEndTime;
+    }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Vote> createWithLocation(@AuthenticationPrincipal AuthUser authUser,

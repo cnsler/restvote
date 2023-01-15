@@ -5,9 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import name.cnsler.restvote.model.Restaurant;
 import name.cnsler.restvote.repository.RestaurantRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -23,6 +26,7 @@ public class AdminRestaurantController {
     private final RestaurantRepository restaurantRepository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(value = "restaurant", allEntries = true)
     public ResponseEntity<Restaurant> createWithLocation(@RequestBody @Valid Restaurant newRestaurant) {
         Restaurant created = restaurantRepository.save(newRestaurant);
         log.info("crate {}", newRestaurant);
@@ -42,6 +46,8 @@ public class AdminRestaurantController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
+    @CacheEvict(value = "restaurant", allEntries = true)
     public void update(@PathVariable int id, @RequestBody @Valid Restaurant updatedRestaurant) {
         Restaurant restaurant = restaurantRepository.getExists(id, Restaurant.class);
         log.info("update {}", restaurant);
@@ -52,12 +58,14 @@ public class AdminRestaurantController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "restaurant", allEntries = true)
     public void delete(@PathVariable int id) {
         restaurantRepository.deleteById(id);
         log.info("delete restaurant with id={}", id);
     }
 
     @GetMapping
+    @Cacheable(value = "restaurant")
     public List<Restaurant> getAll() {
         List<Restaurant> restaurants = restaurantRepository.findAll();
         log.info("get all {}", restaurants);
