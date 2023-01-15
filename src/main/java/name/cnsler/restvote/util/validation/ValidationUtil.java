@@ -16,6 +16,7 @@ public class ValidationUtil {
     }
 
     //  Conservative when you reply, but accept liberally (http://stackoverflow.com/a/32728226/548473)
+    //TODO don't use, contact the author!!
     public static void assureIdConsistent(HasId bean, int id) {
         if (bean.isNew()) {
             bean.setId(id);
@@ -24,15 +25,15 @@ public class ValidationUtil {
         }
     }
 
-    public static void checkModification(int count, int id) {
+    public static <T> void checkModification(int count, int id, Class<T> clazz) {
         if (count == 0) {
-            throw new IllegalRequestDataException("Entity with id=" + id + " not found");
+            throw new IllegalRequestDataException(clazz.getSimpleName() + " with id=" + id + " not found");
         }
     }
 
-    public static <T> T checkExisted(T obj, int id) {
+    public static <T> T checkExists(T obj, int id, Class<T> clazz) {
         if (obj == null) {
-            throw new IllegalRequestDataException("Entity with id=" + id + " not found");
+            throw new IllegalRequestDataException(clazz.getSimpleName() + " with id=" + id + " not found");
         }
         return obj;
     }

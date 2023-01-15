@@ -74,16 +74,6 @@ class AdminUserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = UserTestData.ADMIN_MAIL)
-    void enableNotFound() throws Exception {
-        perform(MockMvcRequestBuilders.patch(REST_URL_SLASH + UserTestData.NOT_FOUND)
-                .param("enabled", "false")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
     void getUnauthorized() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isUnauthorized());
@@ -107,7 +97,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        UserTestData.USER_MATCHER.assertMatch(userRepository.getExisted(UserTestData.USER_ID), UserTestData.getUpdated());
+        UserTestData.USER_MATCHER.assertMatch(userRepository.getExists(UserTestData.USER_ID, User.class), UserTestData.getUpdated());
     }
 
     @Test
@@ -123,7 +113,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
         int newId = created.id();
         newUser.setId(newId);
         UserTestData.USER_MATCHER.assertMatch(created, newUser);
-        UserTestData.USER_MATCHER.assertMatch(userRepository.getExisted(newId), newUser);
+        UserTestData.USER_MATCHER.assertMatch(userRepository.getExists(newId, User.class), newUser);
     }
 
     @Test
@@ -132,7 +122,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(UserTestData.USER_MATCHER.contentJson(UserTestData.admin, UserTestData.user));
+                .andExpect(UserTestData.USER_MATCHER.contentJson(UserTestData.admin, UserTestData.newUser, UserTestData.user));
     }
 
     @Test

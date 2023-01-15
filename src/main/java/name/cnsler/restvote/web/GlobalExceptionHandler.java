@@ -1,10 +1,15 @@
 package name.cnsler.restvote.web;
 
+import jakarta.annotation.Nullable;
+import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import name.cnsler.restvote.error.AppException;
+import name.cnsler.restvote.util.validation.ValidationUtil;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.*;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -42,11 +47,47 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AppException.class)
     public ProblemDetail appException(AppException ex, WebRequest request) {
         log.error("ApplicationException: {}", ex.getMessage());
-        return createProblemDetail(ex, ex.getStatusCode(), request);
+        return createProblemDetail(ex, ex.getStatusCode(), request, null);
     }
 
-    private ProblemDetail createProblemDetail(Exception ex, HttpStatusCode statusCode, WebRequest request) {
-        return createProblemDetail(ex, statusCode, ex.getMessage(), null, null, request);
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail conflict(DataIntegrityViolationException ex, WebRequest request) {
+        String message = ValidationUtil.getRootCause(ex).getMessage();
+        log.error("DataIntegrityViolationException: {}", message);
+        String customMessage = null;
+        if (message.toLowerCase().contains("restaurant(name")) {
+            customMessage = "Restaurant with this name already existed";
+        }
+        if (message.toLowerCase().contains("foreign key(restaurant_id)")) {
+            customMessage = "Invalid restaurant id";
+        }
+        if (message.toLowerCase().contains("vote_unique_user_date")) {
+            customMessage = "Only one vote per day";
+        }
+        if (message.toLowerCase().contains("meal_unique_restaurant_date_name")) {
+            customMessage = "One unique meal name on day for restaurant";
+        }
+        return createProblemDetail(ex, HttpStatus.CONFLICT, request, customMessage);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ProblemDetail constraint(ConstraintViolationException ex, WebRequest request) {
+        String message = ValidationUtil.getRootCause(ex).getMessage();
+        log.error("ConstraintViolationException: {}", message);
+        return createProblemDetail(ex, HttpStatus.UNPROCESSABLE_ENTITY, request, null);
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ProblemDetail empty(EmptyResultDataAccessException ex, WebRequest request) {
+        String message = ValidationUtil.getRootCause(ex).getMessage();
+        log.error("EmptyResultDataAccessException: {}", message);
+        return createProblemDetail(ex, HttpStatus.UNPROCESSABLE_ENTITY, request, null);
+    }
+
+    private ProblemDetail createProblemDetail(Exception ex, HttpStatusCode statusCode, WebRequest request, @Nullable String customMessage) {
+        String message = customMessage != null ? customMessage : ex.getMessage();
+        log.error("Error message: {}", message);
+        return createProblemDetail(ex, statusCode, message, null, null, request);
     }
 
     private String getErrorMessage(ObjectError error) {

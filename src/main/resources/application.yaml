@@ -15,8 +15,8 @@ spring:
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
         jdbc.batch_size: 20
   datasource:
-    url: jdbc:h2:mem:restvote
-    #    tcp: jdbc:h2:tcp://localhost:9092/mem:restvote
+    url: jdbc:h2:mem:restvote;DB_CLOSE_DELAY=-1 # https://h2database.com/html/features.html#in_memory_databases
+    #    tcp: jdbc:h2:tcp://localhost:9090/mem:restvote
     username: sa
     password: saPass
 
@@ -29,7 +29,7 @@ spring:
 
   # https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties-cache
   cache:
-    cache-names: users
+    cache-names: users,restaurant,meals
     caffeine.spec: maximumSize=5000,expireAfterAccess=60s
 
 logging:
@@ -38,10 +38,16 @@ logging:
     name.cnsler.restvote: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
 
-server.servlet:
-  encoding:
-    charset: UTF-8 # Charset of HTTP requests and responses. Added to the "Content-Type" header if not set explicitly
-    enabled: true # Enable http encoding support
-    force: true
+server:
+  port: 8081
+  servlet:
+    encoding:
+      charset: UTF-8 # Charset of HTTP requests and responses. Added to the "Content-Type" header if not set explicitly
+      enabled: true # Enable http encoding support
+      force: true
 
 springdoc.swagger-ui.path: /
+
+app:
+  time:
+    constraint: "11:00"
