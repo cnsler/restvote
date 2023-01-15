@@ -10,7 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.time.LocalDate;
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "vote_date"}, name = "vote_unique_user_date_idx")})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "vote_date"}, name = "vote_unique_user_date")})
 @Getter
 @Setter
 public class Vote extends BaseEntity {
