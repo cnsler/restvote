@@ -39,7 +39,7 @@ public class Meal extends NamedEntity {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", restaurantId=" + restaurant.getId() +
-                ", mealDate=" + date +
+                ", date=" + date +
                 '}';
     }
 }
