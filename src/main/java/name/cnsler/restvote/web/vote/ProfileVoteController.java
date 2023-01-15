@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static name.cnsler.restvote.util.validation.ValidationUtil.checkExists;
+
 @RestController
 @RequestMapping(value = ProfileVoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
@@ -51,7 +53,8 @@ public class ProfileVoteController {
 
     @GetMapping("/{id}")
     public Vote get(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
-        Vote vote = voteExists(id, authUser.id());
+        Vote vote = voteRepository.getByIdAndUserId(id, authUser.id()).orElse(null);
+        checkExists(vote, id, Vote.class);
         log.info("get {}", vote);
         return vote;
     }
@@ -60,7 +63,8 @@ public class ProfileVoteController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id, @Valid @RequestBody VoteTo voteTo) {
         int restaurantId = voteTo.getRestaurantId();
-        Vote vote = voteExists(id, authUser.id());
+        Vote vote = voteRepository.getByIdAndUserId(id, authUser.id()).orElse(null);
+        checkExists(vote, id, Vote.class);
         if (restaurantId == vote.getRestaurant().id()) return;
         vote.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
         checkVoteEndTime(vote);
@@ -71,7 +75,8 @@ public class ProfileVoteController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
-        Vote vote = voteExists(id, authUser.id());
+        Vote vote = voteRepository.getByIdAndUserId(id, authUser.id()).orElse(null);
+        checkExists(vote, id, Vote.class);
         checkVoteEndTime(vote);
         voteRepository.delete(vote);
         log.info("delete vote with id={}", id);
@@ -84,11 +89,6 @@ public class ProfileVoteController {
         //TODO restaurant id instead Restaurant{id, title}:
         // VoteTo{id, restaurantId, date(?)}?
         return votes;
-    }
-
-    private Vote voteExists(int id, int userId) {
-        return voteRepository.getByIdAndUserId(id, userId).orElseThrow(
-                () -> new IllegalRequestDataException("Vote with id=" + id + " not found"));
     }
 
     private void checkVoteEndTime(Vote vote) {

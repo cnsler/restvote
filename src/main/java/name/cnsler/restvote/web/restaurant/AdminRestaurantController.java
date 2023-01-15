@@ -3,7 +3,6 @@ package name.cnsler.restvote.web.restaurant;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import name.cnsler.restvote.error.IllegalRequestDataException;
 import name.cnsler.restvote.model.Restaurant;
 import name.cnsler.restvote.repository.RestaurantRepository;
 import org.springframework.http.HttpStatus;
@@ -36,7 +35,7 @@ public class AdminRestaurantController {
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
-        Restaurant restaurant = restaurantExists(id);
+        Restaurant restaurant = restaurantRepository.getExists(id, Restaurant.class);
         log.info("get {}", restaurant);
         return restaurant;
     }
@@ -44,7 +43,7 @@ public class AdminRestaurantController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable int id, @RequestBody @Valid Restaurant updatedRestaurant) {
-        Restaurant restaurant = restaurantExists(id);
+        Restaurant restaurant = restaurantRepository.getExists(id, Restaurant.class);
         log.info("update {}", restaurant);
         log.info("updated {}", updatedRestaurant);
         updatedRestaurant.setId(id);
@@ -63,10 +62,5 @@ public class AdminRestaurantController {
         List<Restaurant> restaurants = restaurantRepository.findAll();
         log.info("get all {}", restaurants);
         return restaurants;
-    }
-
-    private Restaurant restaurantExists(int id) {
-        return restaurantRepository.findById(id).orElseThrow(
-                () -> new IllegalRequestDataException("Restaurant with id=" + id + " not found"));
     }
 }

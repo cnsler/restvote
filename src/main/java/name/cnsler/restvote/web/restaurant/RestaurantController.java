@@ -3,7 +3,6 @@ package name.cnsler.restvote.web.restaurant;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import name.cnsler.restvote.error.IllegalRequestDataException;
 import name.cnsler.restvote.model.Meal;
 import name.cnsler.restvote.model.Restaurant;
 import name.cnsler.restvote.repository.MealRepository;
@@ -29,7 +28,7 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
-        Restaurant restaurant = restaurantExists(id);
+        Restaurant restaurant = restaurantRepository.getExists(id, Restaurant.class);
         log.info("get {}", restaurant);
         return restaurant;
     }
@@ -40,7 +39,8 @@ public class RestaurantController {
     @GetMapping("/{id}/meals-on-date")
     public List<Meal> getMealsOnDate(@PathVariable int id, @Nullable LocalDate date) {
         LocalDate mealDate = Objects.requireNonNullElse(date, LocalDate.now());
-        List<Meal> meals = mealRepository.findAllByRestaurantIdAndMealDate(restaurantExists(id).id(), mealDate);
+        Restaurant restaurant = restaurantRepository.getExists(id, Restaurant.class);
+        List<Meal> meals = mealRepository.findAllByRestaurantIdAndMealDate(restaurant.id(), mealDate);
         log.info("get all meals {} for restaurant id={} on date={}", meals, id, mealDate);
         return meals;
     }
@@ -50,10 +50,5 @@ public class RestaurantController {
         List<Restaurant> restaurants = restaurantRepository.findAll();
         log.info("get all {}", restaurants);
         return restaurants;
-    }
-
-    private Restaurant restaurantExists(int id) {
-        return restaurantRepository.findById(id).orElseThrow(
-                () -> new IllegalRequestDataException("Restaurant with id=" + id + " not found"));
     }
 }

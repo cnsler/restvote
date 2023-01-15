@@ -72,14 +72,14 @@ public class AdminMealController {
         //TODO check restaurant id exists? Or change path /api/meals/{id}
         //TODO check meal belong to restaurant?
         log.info("delete meal with id={}", id);
-        mealRepository.deleteExisted(id);
+        mealRepository.deleteExists(id, Meal.class);
     }
 
     @GetMapping
     public List<Meal> getAll(@PathVariable int restaurantId) {
         //TODO optimize SQL query: without Restaurant title (r1_0.title=?)
         Meal mealProbe = new Meal();
-        mealProbe.setRestaurant(restaurantRepository.getExisted(restaurantId));
+        mealProbe.setRestaurant(restaurantRepository.getExists(restaurantId, Restaurant.class));
         List<Meal> meals = mealRepository.findAll(Example.of(mealProbe));
         log.info("getAll meals {} for restaurant id={}", meals, restaurantId);
         return meals;
