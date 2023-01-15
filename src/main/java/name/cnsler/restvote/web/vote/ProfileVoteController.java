@@ -10,6 +10,7 @@ import name.cnsler.restvote.repository.RestaurantRepository;
 import name.cnsler.restvote.repository.VoteRepository;
 import name.cnsler.restvote.to.VoteTo;
 import name.cnsler.restvote.web.AuthUser;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -58,6 +59,7 @@ public class ProfileVoteController {
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id, @Valid @RequestBody VoteTo voteTo) {
         int restaurantId = voteTo.getRestaurantId();
 
@@ -76,6 +78,7 @@ public class ProfileVoteController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
         Vote vote = voteRepository.getByIdAndUserId(id, authUser.id()).orElseThrow(
                 () -> new IllegalRequestDataException("Vote with id=" + id + " not found"));

@@ -9,6 +9,7 @@ import name.cnsler.restvote.model.Restaurant;
 import name.cnsler.restvote.repository.MealRepository;
 import name.cnsler.restvote.repository.RestaurantRepository;
 import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,17 +43,17 @@ public class AdminMealController {
 
     @GetMapping("/{id}")
     public Meal get(@PathVariable int restaurantId, @PathVariable int id) {
-        //TODO check restaurant id exists?
         Optional<Meal> optionalMeal = mealRepository.getByIdAndRestaurantId(id, restaurantId);
-        return optionalMeal.orElseThrow(
+        Meal meal = optionalMeal.orElseThrow(
                 () -> new IllegalRequestDataException(
                         "Meal with id=" + id + " for restaurant id=" + restaurantId + " not found"));
+        log.info("get {}", meal);
+        return meal;
     }
 
     @PutMapping(value = "/{id}" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable int restaurantId, @PathVariable int id, @Valid @RequestBody Meal meal) {
-        //TODO check restaurant id exists?
-//        ValidationUtil.assureIdConsistent(meal, id);
         Optional<Meal> optionalMeal = mealRepository.getByIdAndRestaurantId(id, restaurantId);
         Meal updatableMeal = optionalMeal.orElseThrow(
                 () -> new IllegalRequestDataException(
@@ -66,6 +67,7 @@ public class AdminMealController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int restaurantId, @PathVariable int id) {
         //TODO check restaurant id exists? Or change path /api/meals/{id}
         //TODO check meal belong to restaurant?

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import name.cnsler.restvote.error.IllegalRequestDataException;
 import name.cnsler.restvote.model.Restaurant;
 import name.cnsler.restvote.repository.RestaurantRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,7 @@ public class AdminRestaurantController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable int id, @RequestBody @Valid Restaurant updatedRestaurant) {
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
                 () -> new IllegalRequestDataException("Restaurant with id=" + id + " not found"));
@@ -52,6 +54,7 @@ public class AdminRestaurantController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         restaurantRepository.deleteById(id);
         log.info("delete restaurant with id={}", id);
