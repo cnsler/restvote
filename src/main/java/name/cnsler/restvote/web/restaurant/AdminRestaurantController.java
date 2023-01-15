@@ -36,8 +36,7 @@ public class AdminRestaurantController {
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
-                () -> new IllegalRequestDataException("Restaurant with id=" + id + " not found"));
+        Restaurant restaurant = restaurantExists(id);
         log.info("get {}", restaurant);
         return restaurant;
     }
@@ -45,8 +44,7 @@ public class AdminRestaurantController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable int id, @RequestBody @Valid Restaurant updatedRestaurant) {
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
-                () -> new IllegalRequestDataException("Restaurant with id=" + id + " not found"));
+        Restaurant restaurant = restaurantExists(id);
         log.info("update {}", restaurant);
         log.info("updated {}", updatedRestaurant);
         updatedRestaurant.setId(id);
@@ -65,5 +63,10 @@ public class AdminRestaurantController {
         List<Restaurant> restaurants = restaurantRepository.findAll();
         log.info("get all {}", restaurants);
         return restaurants;
+    }
+
+    private Restaurant restaurantExists(int id) {
+        return restaurantRepository.findById(id).orElseThrow(
+                () -> new IllegalRequestDataException("Restaurant with id=" + id + " not found"));
     }
 }
