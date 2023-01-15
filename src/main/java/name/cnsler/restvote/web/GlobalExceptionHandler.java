@@ -64,6 +64,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         if (message.toLowerCase().contains("vote_unique_user_date")) {
             customMessage = "One vote per day";
         }
+        if (message.toLowerCase().contains("meal_unique_restaurant_date_name")) {
+            customMessage = "One unique meal name on day for restaurant";
+        }
         return createProblemDetail(ex, HttpStatus.CONFLICT, request, customMessage);
     }
 
