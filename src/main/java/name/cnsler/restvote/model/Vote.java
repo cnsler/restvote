@@ -37,7 +37,7 @@ public class Vote extends BaseEntity {
                 "id=" + id +
                 ", userId=" + user.getId() +
                 ", restaurantId=" + restaurant.getId() +
-                ", voteDate=" + date +
+                ", date=" + date +
                 '}';
     }
 }

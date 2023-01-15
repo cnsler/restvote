@@ -75,7 +75,7 @@ public class AdminMealController {
     public List<Meal> getAll(@PathVariable int restaurantId) {
         Restaurant restaurant = restaurantRepository.getExists(restaurantId, Restaurant.class);
         List<Meal> meals = mealRepository.findAllByRestaurantId(restaurantId,
-                Sort.by("mealDate").descending().and(Sort.by("name")));
+                Sort.by("date").descending().and(Sort.by("name")));
         log.info("get all meals {} for restaurant id={}", meals, restaurantId);
         return meals;
     }
