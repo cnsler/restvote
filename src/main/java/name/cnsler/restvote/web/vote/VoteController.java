@@ -30,7 +30,7 @@ public class VoteController {
     @GetMapping("/on-date")
     public List<Vote> getAllOnDate(@Nullable LocalDate date) {
         LocalDate voteDate = Objects.requireNonNullElse(date, LocalDate.now());
-        List<Vote> votes = voteRepository.findAllByVoteDate(voteDate);
+        List<Vote> votes = voteRepository.findAllByDate(voteDate);
         log.info("getAll votes={} on date={}", votes, voteDate);
         return votes;
     }

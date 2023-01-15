@@ -16,12 +16,12 @@ public interface VoteRepository extends BaseRepository<Vote> {
     Optional<Vote> getByIdAndUserId(int id, int userId);
 
     @EntityGraph(attributePaths = "restaurant")
-    List<Vote> findAllByUserIdOrderByVoteDateDesc(int userId);
+    List<Vote> findAllByUserIdOrderByDateDesc(int userId);
 
     @EntityGraph(attributePaths = "restaurant")
-    List<Vote> findAllByVoteDate(LocalDate voteDate);
+    List<Vote> findAllByDate(LocalDate date);
 
     @EntityGraph(attributePaths = "restaurant")
-    @Query("SELECT v FROM Vote v ORDER BY v.voteDate DESC")
+    @Query("SELECT v FROM Vote v ORDER BY v.date DESC")
     List<Vote> findAllSorted();
 }

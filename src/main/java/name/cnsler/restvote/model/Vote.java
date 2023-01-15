@@ -29,7 +29,7 @@ public class Vote extends BaseEntity {
 
     @Column(name = "vote_date", nullable = false)
     @NotNull(message = "Date must not be null")
-    private LocalDate voteDate;
+    private LocalDate date;
 
     @Override
     public String toString() {
@@ -37,7 +37,7 @@ public class Vote extends BaseEntity {
                 "id=" + id +
                 ", userId=" + user.getId() +
                 ", restaurantId=" + restaurant.getId() +
-                ", voteDate=" + voteDate +
+                ", voteDate=" + date +
                 '}';
     }
 }

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import name.cnsler.restvote.error.IllegalRequestDataException;
+import name.cnsler.restvote.model.Restaurant;
 import name.cnsler.restvote.model.Vote;
 import name.cnsler.restvote.repository.RestaurantRepository;
 import name.cnsler.restvote.repository.VoteRepository;
@@ -39,7 +40,7 @@ public class ProfileVoteController {
         Vote vote = new Vote();
         vote.setUser(authUser.getUser());
         vote.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
-        vote.setVoteDate(LocalDate.now());
+        vote.setDate(LocalDate.now());
         log.info("{}", vote);
         checkVoteEndTime(vote);
         Vote created = voteRepository.save(vote);
@@ -84,7 +85,7 @@ public class ProfileVoteController {
 
     @GetMapping
     public List<Vote> getAll(@AuthenticationPrincipal AuthUser authUser) {
-        List<Vote> votes = voteRepository.findAllByUserIdOrderByVoteDateDesc(authUser.id());
+        List<Vote> votes = voteRepository.findAllByUserIdOrderByDateDesc(authUser.id());
         log.info("getAll votes={}", votes);
         //TODO restaurant id instead Restaurant{id, title}:
         // VoteTo{id, restaurantId, date(?)}?
@@ -92,7 +93,7 @@ public class ProfileVoteController {
     }
 
     private void checkVoteEndTime(Vote vote) {
-        if (vote.getVoteDate().isBefore(LocalDate.now())) {
+        if (vote.getDate().isBefore(LocalDate.now())) {
             throw new IllegalRequestDataException("You can't change old votes");
         }
         if (!LocalTime.now().isBefore(voteEndTime)) {
