@@ -8,7 +8,7 @@ import name.cnsler.restvote.model.Meal;
 import name.cnsler.restvote.model.Restaurant;
 import name.cnsler.restvote.repository.MealRepository;
 import name.cnsler.restvote.repository.RestaurantRepository;
-import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = AdminMealController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,7 +30,6 @@ public class AdminMealController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Meal> createWithLocation(@PathVariable int restaurantId, @Valid @RequestBody Meal meal) {
         meal.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
-        //TODO catch Exception
         Meal created = mealRepository.save(meal);
         log.info("{} created", created);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -43,10 +41,7 @@ public class AdminMealController {
 
     @GetMapping("/{id}")
     public Meal get(@PathVariable int restaurantId, @PathVariable int id) {
-        Optional<Meal> optionalMeal = mealRepository.getByIdAndRestaurantId(id, restaurantId);
-        Meal meal = optionalMeal.orElseThrow(
-                () -> new IllegalRequestDataException(
-                        "Meal with id=" + id + " for restaurant id=" + restaurantId + " not found"));
+        Meal meal = getMealBelongRestaurant(id, restaurantId);
         log.info("get {}", meal);
         return meal;
     }
@@ -54,10 +49,7 @@ public class AdminMealController {
     @PutMapping(value = "/{id}" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable int restaurantId, @PathVariable int id, @Valid @RequestBody Meal meal) {
-        Optional<Meal> optionalMeal = mealRepository.getByIdAndRestaurantId(id, restaurantId);
-        Meal updatableMeal = optionalMeal.orElseThrow(
-                () -> new IllegalRequestDataException(
-                        "Meal with id=" + id + " for restaurant id=" + restaurantId + " not found"));
+        Meal updatableMeal = getMealBelongRestaurant(id, restaurantId);
         log.info("updatableMeal={}", updatableMeal);
         meal.setId(id);
         Restaurant restaurant = updatableMeal.getRestaurant();
@@ -69,19 +61,22 @@ public class AdminMealController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int restaurantId, @PathVariable int id) {
-        //TODO check restaurant id exists? Or change path /api/meals/{id}
-        //TODO check meal belong to restaurant?
-        log.info("delete meal with id={}", id);
-        mealRepository.deleteExists(id, Meal.class);
+        Meal meal = getMealBelongRestaurant(id, restaurantId);
+        log.info("delete meal {}", meal);
+        mealRepository.delete(meal);
     }
 
     @GetMapping
     public List<Meal> getAll(@PathVariable int restaurantId) {
-        //TODO optimize SQL query: without Restaurant title (r1_0.title=?)
-        Meal mealProbe = new Meal();
-        mealProbe.setRestaurant(restaurantRepository.getExists(restaurantId, Restaurant.class));
-        List<Meal> meals = mealRepository.findAll(Example.of(mealProbe));
-        log.info("getAll meals {} for restaurant id={}", meals, restaurantId);
+        Restaurant restaurant = restaurantRepository.getExists(restaurantId, Restaurant.class);
+        List<Meal> meals = mealRepository.findAllByRestaurantId(restaurantId,
+                Sort.by("mealDate").descending().and(Sort.by("name")));
+        log.info("get all meals {} for restaurant id={}", meals, restaurantId);
         return meals;
+    }
+
+    private Meal getMealBelongRestaurant(int id, int restaurantId) {
+        return mealRepository.getByIdAndRestaurantId(id, restaurantId).orElseThrow(
+                () -> new IllegalRequestDataException("Meal with id=" + id + " for restaurant id=" + restaurantId + " not found"));
     }
 }
