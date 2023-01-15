@@ -35,8 +35,6 @@ spring:
 logging:
   level:
     root: WARN
-    name.cnsler.restvote: DEBUG
-    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
 
 server:
   port: 8081
