@@ -19,15 +19,17 @@ public class UserTestData {
     public static final User admin = new User(ADMIN_ID, "Admin", ADMIN_MAIL, "adminPass", Role.ADMIN, Role.USER);
     public static final User user = new User(USER_ID, "User", USER_MAIL, "userPass", Role.USER);
 
+    public static final User newUser = new User(3, "New User", "n@u", "newPass", Role.USER);
+
     public static User getNew() {
-        return new User(null, "NewUser", "n@u", "newPass", Collections.singleton(Role.USER));
+        return new User(null, "New", "n@n", "newPass", Collections.singleton(Role.USER));
     }
 
     public static User getUpdated() {
-        return new User(USER_ID, "UpdUser", USER_MAIL, "newPass", Collections.singleton(Role.ADMIN));
+        return new User(USER_ID, "UpdUser", USER_MAIL, "updPass", Collections.singleton(Role.ADMIN));
     }
 
     public static String jsonWithPassword(User user, String passw) {
-        return JsonUtil.writeAdditionProps(user, "userPass", passw);
+        return JsonUtil.writeAdditionProps(user, "password", passw);
     }
 }
